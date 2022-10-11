@@ -1,30 +1,45 @@
 package com.example.demo.student;
 
+import javax.persistence.*; //si je change hibernate pour un autre provider, tout va marcher correctement grâce à cette implementation
 import java.time.LocalDate;
+import java.time.Period;
 
+@Entity
+@Table
 public class Student {
+    @Id
+    @SequenceGenerator(
+            name = "student_sequence",
+            sequenceName = "student_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "student_sequence"
+    )
+
     private Long id;
     private String name;
     private String email;
     private LocalDate ld;
+    @Transient
     private Integer age;
 
     public Student() {
     }
 
-    public Student(Long id, String name, String email, LocalDate ld, Integer age) {
+    public Student(Long id, String name, String email, LocalDate ld) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.ld = ld;
-        this.age = age;
     }
 
-    public Student(String name, String email, LocalDate ld, Integer age) {
+    public Student(String name, String email, LocalDate ld) {
         this.name = name;
         this.email = email;
         this.ld = ld;
-        this.age = age;
+
     }
 
     public Long getId() {
@@ -60,7 +75,7 @@ public class Student {
     }
 
     public Integer getAge() {
-        return age;
+        return Period.between(this.ld, LocalDate.now()).getYears();
     }
 
     public void setAge(Integer age) {
